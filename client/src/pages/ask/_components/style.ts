@@ -52,3 +52,40 @@ export const BackButton = styled(Link)`
     box-shadow: inset 0 0 10px rgba(179, 167, 167, 0.5);
   }
 `;
+
+export const Label = styled.label`
+  display: block;
+  width: 100%;
+  height: 300px;
+  background-color: ${Palette.primary.m1};
+  border-radius: 20px;
+`;
+
+export const Textarea = styled.textarea`
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  padding-top: 80px;
+  font-size: 100px;
+  font-weight: 500;
+  overflow: hidden;
+`;
+
+export const Submit = styled.button`
+  width: 50%;
+  height: 60px;
+  background-color: ${Palette.lightGreen};
+  border-radius: 20px;
+  color: white;
+  font-size: 24px;
+  font-weight: 600;
+
+  &:active {
+    background-color: #1b7a13;
+  }
+`;

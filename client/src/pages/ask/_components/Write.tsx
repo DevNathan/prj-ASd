@@ -6,20 +6,22 @@ import LoadingSpinner from "@/assets/icons/LoadingSpinner";
 import * as S from "./style";
 import BackIcon from "@/assets/icons/BackIcon";
 import Palette from "@/global/Palette";
+import { useLoadingScreen } from "@/contexts/LoadingScreenContext";
 
 const Write = () => {
   const { openKeyboard, resetBuffer, closeKeyboard } = useKeyboard();
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const ref = useRef<HTMLTextAreaElement | null>(null);
   const navigate = useNavigate();
   const [isFetching, setIsFetching] = useState(false);
+  const { show, hide } = useLoadingScreen();
 
   const handleFocus = () => {
-    inputRef.current && openKeyboard(inputRef.current);
+    ref.current && openKeyboard(ref.current);
   };
 
   const handleReset = () => {
-    if (inputRef.current) {
-      inputRef.current.value = "";
+    if (ref.current) {
+      ref.current.value = "";
       resetBuffer();
     }
   };
@@ -29,16 +31,18 @@ const Write = () => {
 
     closeKeyboard();
 
-    if (inputRef.current?.value) {
-      console.log(inputRef.current?.value);
+    if (ref.current?.value) {
+      console.log(ref.current?.value);
       setIsFetching(true);
+      show();
       try {
-        const data = await ask(inputRef.current.value);
+        const data = await ask(ref.current.value);
         navigate("/ask/confirm", { state: data });
       } catch (error: any) {
         console.error(error);
       } finally {
         setIsFetching(false);
+        hide();
       }
     }
   };
@@ -55,15 +59,21 @@ const Write = () => {
           하신가요?
         </S.Title>
       </S.TitleWrapper>
-      <form onSubmit={handleSubmit}>
-        <input ref={inputRef} type="text" onFocus={handleFocus} />
-        <button type="button" onClick={handleReset}>
-          초기화
-        </button>
-        <button type="submit" disabled={isFetching}>
-          제출하기
-        </button>
-        {isFetching && <LoadingSpinner />}
+      <form
+        onSubmit={handleSubmit}
+        style={{ width: "100%", display: "grid", gap: 20 }}
+      >
+        <S.Label>
+          <S.Textarea ref={ref} onFocus={handleFocus} disabled={isFetching} />
+        </S.Label>
+        {/*<button type="button" onClick={handleReset}>*/}
+        {/*  초기화*/}
+        {/*</button>*/}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <S.Submit type="submit" disabled={isFetching}>
+            제출하기
+          </S.Submit>
+        </div>
       </form>
     </S.Wrapper>
   );

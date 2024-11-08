@@ -1,14 +1,14 @@
 import React, { createContext, useContext, useState, useRef } from "react";
 import Hangul from "hangul-js";
 
-interface KeyboardContextType {
+type KeyboardContextType = {
   isVisible: boolean;
-  openKeyboard: (input: HTMLInputElement) => void;
+  openKeyboard: (input: HTMLInputElement | HTMLTextAreaElement) => void;
   closeKeyboard: () => void;
   handleKeyPress: (key: string) => void;
   focusInput: () => void;
   resetBuffer: () => void;
-}
+};
 
 const KeyboardContext = createContext<KeyboardContextType | undefined>(
   undefined,
@@ -17,9 +17,7 @@ const KeyboardContext = createContext<KeyboardContextType | undefined>(
 export const useKeyboard = () => {
   const context = useContext(KeyboardContext);
   if (!context) {
-    throw new Error(
-      "useKeyboardContext must be used within a KeyboardProvider",
-    );
+    throw new Error("올바르지 않은 키보드 컨텍스트 사용");
   }
   return context;
 };
@@ -40,10 +38,10 @@ export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const inputRef = useRef<HTMLInputElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
   const [buffer, setBuffer] = useState<string[]>([]);
 
-  const setInputElement = (element: HTMLInputElement | null) => {
+  const setInputElement = (element: any) => {
     inputRef.current = element;
   };
 
@@ -80,7 +78,7 @@ export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const openKeyboard = (input: HTMLInputElement) => {
+  const openKeyboard = (input: HTMLInputElement | HTMLTextAreaElement) => {
     setInputElement(input);
     setIsVisible(true);
 
@@ -95,6 +93,7 @@ export const KeyboardProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const closeKeyboard = () => {
     setInputElement(null);
+    resetBuffer();
     setIsVisible(false);
   };
 

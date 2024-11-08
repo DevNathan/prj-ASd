@@ -63,3 +63,10 @@ hr {
     border: 0;
     border-bottom: 1px solid #000;
 }
+textarea {
+    resize: none;
+    border: none;
+}
+textarea:focus {
+    outline: none;
+}
